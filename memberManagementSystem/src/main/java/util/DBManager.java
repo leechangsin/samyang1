@@ -14,7 +14,7 @@ public class DBManager {
 		try {
 			Context initCtx = new InitialContext();
 			Context envCtx = (Context) initCtx.lookup("java:comp/env");
-			DataSource ds = (DataSource) envCtx.lookup("jdbc/samyang");
+			DataSource ds = (DataSource) envCtx.lookup("jdbc/mysql");
 			return ds.getConnection();
 		} catch (Exception e) {
 			e.printStackTrace();

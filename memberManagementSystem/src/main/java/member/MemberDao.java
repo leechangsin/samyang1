@@ -12,7 +12,7 @@ public class MemberDao {
 	private Connection conn = null;
 	private PreparedStatement pstmt = null;
 	
-	public void insertMember(member member){
+	public void insertMember(Member member){
 		try{
 			conn = DBManager.getConnection();
 			/* sha파일의 오류로 암호화 되지않음 나중에 수정하기...
@@ -29,6 +29,8 @@ public class MemberDao {
 			pstmt.setTimestamp(4, member.getReg_date());
 			pstmt.setString(5, member.getAddress());
 			pstmt.setString(6, member.getTel());
+			
+			pstmt.executeUpdate();
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -75,7 +77,7 @@ public class MemberDao {
 	
 	public int confirmId(String id){
 		ResultSet resultSet = null;
-		int x = -1;
+		int x = 1;
 		
 		try{
 			conn = DBManager.getConnection();
@@ -83,7 +85,6 @@ public class MemberDao {
 			pstmt = conn.prepareStatement("select id from member where id=?");
 			pstmt.setString(1, id);
 			resultSet = pstmt.executeQuery();
-			
 			if(resultSet.next())
 				x = 1; //같은 아이디 있음
 			else
@@ -93,13 +94,12 @@ public class MemberDao {
 		}finally{
 			DBManager.closeConnection(conn, pstmt);
 		}//end try
-		
 		return x;
 	}//end confirmId(String id)
 	
-	public member getMember(String id, String passwd){
+	public Member getMember(String id, String passwd){
 		ResultSet resultSet = null;
-		member member = null;
+		Member member = null;
 		
 		//SHA256 sha = SHA256.getInsatnce();
 		try {
@@ -125,7 +125,7 @@ public class MemberDao {
 				}//end if(BCrypt.checkpw(shaPasswd, dbPasswd))
 				*/
 				if (dbPasswd.equals(passwd)) {
-					member = new member();
+					member = new Member();
 					member.setId(resultSet.getString("id"));
 					member.setName(resultSet.getString("name"));
 					member.setReg_date(resultSet.getTimestamp("reg_date"));

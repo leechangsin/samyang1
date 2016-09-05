@@ -2,12 +2,13 @@ package member;
 
 import java.sql.Timestamp;
 
-public class member {
+public class Member {
 	private String id;
 	private String passwd;
 	private String name;
 	private Timestamp reg_date;
 	private String address;
+	private String tel;
 
 	public String getId() {
 		return id;
@@ -56,7 +57,5 @@ public class member {
 	public void setTel(String tel) {
 		this.tel = tel;
 	}
-
-	private String tel;
 
 }

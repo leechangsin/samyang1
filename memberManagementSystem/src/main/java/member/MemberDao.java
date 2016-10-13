@@ -142,6 +142,55 @@ public class MemberDao {
 		return member;
 	}//end getMember(String id, String passwd)
 	
+	public int updateMember(Member member){
+		ResultSet resultSet = null;
+		int x = -1;
+		
+		//SHA256 sha = SHA256.getInsatnce();
+		try{
+			conn = DBManager.getConnection();
+			
+			String orgPasswd = member.getPasswd();
+			//String shapasswd = sha.getSha256(orgPasswd.getBytes());
+			
+			pstmt = conn.prepareStatement("select passwd from member where id=?");
+			pstmt.setString(1, member.getId());
+			resultSet = pstmt.executeQuery();
+			
+			if(resultSet.next()){
+				String dbPasswd = resultSet.getString("passwd");
+				/*
+				if(BCrypt.checkpw(shaPasswd, dbPasswd)){
+					pstmt = conn.prepareStatement("update member set name=?, address=?, tel=? where id=?");
+					pstmt.setString(1, member.getName());
+					pstmt.setString(2, member.getAddress());
+					pstmt.setString(3, member.getTel());
+					pstmt.setString(4, member.getId());
+					x = 1;//회원정보수정 처리 성공
+				} else{
+					x = 0;//회원정보수정 처리 실패
+				}//end if(BCrypt.checkpw(shaPasswd, dbPasswd))
+				*/
+				if(dbPasswd.equals(orgPasswd)){
+					pstmt = conn.prepareStatement("update member set name=?, address=?, tel=? where id=?");
+					pstmt.setString(1, member.getName());
+					pstmt.setString(2, member.getAddress());
+					pstmt.setString(3, member.getTel());
+					pstmt.setString(4, member.getId());
+					x = 1;//회원정보수정 처리 성공
+				} else{
+					x = 0;//회원정보수정 처리 실패
+				}//end if(dbPasswd.equals(orgPasswd))
+			}//end if(resultSet.next())
+		} catch(Exception e){
+			e.printStackTrace();
+		} finally{
+			DBManager.closeConnection(conn, pstmt);
+		}//end try
+		
+		return x;
+	}//end updateMember(Member member)
+	
 	public int deleteMember(String id, String passwd){
 		ResultSet resultSet = null;
 		int x = -1;
